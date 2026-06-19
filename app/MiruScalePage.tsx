@@ -10,6 +10,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react"
 import { AnimatePresence, motion } from "framer-motion"
+import { createPortal } from "react-dom"
 
 // CSS is loaded via globals.css (Next.js)
 function CSSInjector() { return null }
@@ -3907,17 +3908,8 @@ function Portal({
   return ReactDOM.createPortal(children, target)
 }
 
-// Make Portal safe for environments without ReactDOM
-// (Framer canvas may not have it loaded)
-let ReactDOM: { createPortal: typeof import("react-dom")["createPortal"] }
-try {
-  ReactDOM = (window as any).ReactDOM ?? { createPortal: (c: any, _el: any) => c }
-} catch {
-  ReactDOM = {
-    createPortal: (children: React.ReactNode) =>
-      children as unknown as React.ReactPortal,
-  }
-}
+// Portal helper for Next.js
+const ReactDOM = { createPortal }
 
 /**
  * ErrorBoundary — catches render errors in child trees.
