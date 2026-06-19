@@ -1154,51 +1154,150 @@ const FOLLOWUP_MESSAGES = [
  * Three-column feature grid + central headline + CTA.
  */
 function SolutionSection() {
-  const FEATURES = [
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref as React.RefObject<HTMLElement>, 0.15)
+
+  const CARDS = [
     {
-      icon: "⚡",
+      num: "01",
       title: "Instant Lead Qualification",
-      desc:  "Every DM gets scored in under 60 seconds — intent, budget, fit, readiness. No more guessing who's serious.",
+      desc: "Every DM gets scored in under 60 seconds — intent, budget, fit, readiness. No more guessing who's serious.",
+      tag: "< 60s response",
+      visual: (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {[
+            { name: "sarah.j_fit", label: "Hot Lead", color: "#0D9488" },
+            { name: "mike.r.coach", label: "Warm Lead", color: "#0891B2" },
+            { name: "aly.lee__", label: "Info Seeker", color: "#6B7280" },
+          ].map((row) => (
+            <div key={row.name} style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              padding: "8px 12px", borderRadius: 8,
+              background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)"
+            }}>
+              <span style={{ fontSize: 13, color: "#9CA3AF", fontFamily: "var(--font-inter, monospace)" }}>{row.name}</span>
+              <span style={{
+                fontSize: 11, fontWeight: 600, letterSpacing: "0.05em",
+                color: row.color, textTransform: "uppercase"
+              }}>{row.label}</span>
+            </div>
+          ))}
+        </div>
+      ),
     },
     {
-      icon: "🔄",
+      num: "02",
       title: "Automated Follow-Up",
-      desc:  "Hot leads get followed up across 7 days without you lifting a finger. Warm leads get nurtured until they're ready.",
+      desc: "Hot leads get followed up across 7 days without you lifting a finger. Warm leads get nurtured until they're ready.",
+      tag: "7-day sequences",
+      visual: (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {["Day 1 · Initial reply sent", "Day 3 · Follow-up scheduled", "Day 7 · Final nudge queued"].map((line, i) => (
+            <div key={i} style={{
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "7px 12px", borderRadius: 8,
+              background: "rgba(13,148,136,0.08)", border: "1px solid rgba(13,148,136,0.15)"
+            }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#0D9488", flexShrink: 0 }} />
+              <span style={{ fontSize: 12, color: "#9CA3AF" }}>{line}</span>
+            </div>
+          ))}
+        </div>
+      ),
     },
     {
-      icon: "📅",
+      num: "03",
       title: "Direct Calendar Booking",
-      desc:  "Qualified leads book straight into your calendar. You show up to calls — not to DMs.",
+      desc: "Qualified leads book straight into your calendar. You show up to calls — not to DMs.",
+      tag: "Auto-booking",
+      visual: (
+        <div style={{
+          padding: "16px", borderRadius: 10,
+          background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)"
+        }}>
+          <div style={{ fontSize: 11, color: "#0D9488", fontWeight: 600, marginBottom: 10, letterSpacing: "0.08em" }}>THIS WEEK</div>
+          {[
+            { time: "Mon 10:00", name: "Discovery · Sarah J." },
+            { time: "Wed 14:00", name: "Discovery · Mike R." },
+            { time: "Fri 11:00", name: "Discovery · Alex K." },
+          ].map((slot) => (
+            <div key={slot.time} style={{
+              display: "flex", justifyContent: "space-between", alignItems: "center",
+              padding: "7px 0", borderBottom: "1px solid rgba(255,255,255,0.05)"
+            }}>
+              <span style={{ fontSize: 12, color: "#6B7280" }}>{slot.time}</span>
+              <span style={{ fontSize: 12, color: "#D1D5DB" }}>{slot.name}</span>
+            </div>
+          ))}
+        </div>
+      ),
     },
   ] as const
 
   return (
-    <section className="ms-section ms-solution" id="solution">
-      <div className="ms-solution__inner ms-container">
-        <div className="ms-solution__header">
-          <p className="ms-label">The System</p>
+    <section className="ms-section ms-solution" id="solution" ref={ref}>
+      <div className="ms-wrap">
+        <div className="ms-solution__header" style={{ textAlign: "center", marginBottom: 64 }}>
+          <p className="ms-label" style={{ marginBottom: 16 }}>The System</p>
           <h2 className="ms-h2">
             One system. Zero guesswork.<br />Every lead handled.
           </h2>
-          <p className="ms-solution__sub">
+          <p style={{ marginTop: 20, color: "var(--c-text-2, #9CA3AF)", maxWidth: 520, margin: "20px auto 0", lineHeight: 1.6 }}>
             Miru Scale builds and installs an AI client system that qualifies,
             follows up, and books calls — so you can focus on coaching, not admin.
           </p>
         </div>
 
-        <div className="ms-solution__grid">
-          {FEATURES.map((feat) => (
-            <div key={feat.title} className="ms-solution__card">
-              <span className="ms-solution__icon" aria-hidden="true">
-                {feat.icon}
-              </span>
-              <h3 className="ms-solution__card-title">{feat.title}</h3>
-              <p className="ms-solution__card-desc">{feat.desc}</p>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: 20,
+        }}>
+          {CARDS.map((card, idx) => (
+            <div
+              key={card.num}
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 16,
+                padding: 28,
+                position: "relative",
+                overflow: "hidden",
+                opacity: inView ? 1 : 0,
+                transform: inView ? "translateY(0)" : "translateY(32px)",
+                transition: `opacity 0.5s ease ${idx * 0.12}s, transform 0.5s ease ${idx * 0.12}s`,
+              }}
+            >
+              {/* Top gradient line */}
+              <div style={{
+                position: "absolute", top: 0, left: 0, right: 0, height: 1,
+                background: "linear-gradient(90deg, transparent, rgba(13,148,136,0.6), transparent)"
+              }} />
+
+              {/* Number + Tag */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                <span style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontWeight: 600, letterSpacing: "0.1em" }}>{card.num}</span>
+                <span style={{
+                  fontSize: 11, color: "#0D9488", fontWeight: 600,
+                  letterSpacing: "0.06em", textTransform: "uppercase",
+                  background: "rgba(13,148,136,0.1)", padding: "3px 10px",
+                  borderRadius: 100, border: "1px solid rgba(13,148,136,0.2)"
+                }}>{card.tag}</span>
+              </div>
+
+              {/* Visual mockup */}
+              <div style={{ marginBottom: 24 }}>{card.visual}</div>
+
+              {/* Text */}
+              <h3 style={{ fontSize: 17, fontWeight: 600, color: "#F9FAFB", marginBottom: 10, lineHeight: 1.3 }}>
+                {card.title}
+              </h3>
+              <p style={{ fontSize: 14, color: "#6B7280", lineHeight: 1.6 }}>{card.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="ms-solution__cta">
+        <div style={{ textAlign: "center", marginTop: 48 }}>
           <a href="#pricing" className="ms-btn ms-btn--primary">
             See What's Included
           </a>

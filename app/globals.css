@@ -1,3 +1,5 @@
+/* Miru Scale globals */
+
 /* Miru Scale — globals.css */
 
 
@@ -8,8 +10,6 @@
    DM Serif Display for editorial quotes and manifesto text.
    ================================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=DM+Serif+Display:ital@0;1&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
 
 /* ================================================================
    § 1.2 — CSS CUSTOM PROPERTIES (DESIGN TOKEN SYSTEM)

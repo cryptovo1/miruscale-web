@@ -1,10 +1,25 @@
 import type { Metadata } from "next";
+import { Inter, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-dm-serif",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Miru Scale — AI Client Systems für Online Coaches",
+  title: "Miru Scale — AI Client Systems for Online Coaches",
   description:
-    "Automatisiertes Lead-Qualification, Follow-Up & Call-Booking System. Mehr Calls, weniger Chaos.",
+    "Automated lead qualification, follow-up & call booking. Never lose a lead again.",
 };
 
 export default function RootLayout({
@@ -13,8 +28,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de">
-      <body>{children}</body>
+    <html lang="en" className={`${inter.variable} ${dmSerif.variable}`}>
+      <body style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
+        {children}
+      </body>
     </html>
   );
 }
