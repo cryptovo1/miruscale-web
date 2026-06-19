@@ -1210,111 +1210,50 @@ function SolutionSection() {
 
 function HowItWorksSection() {
   const ref = useRef<HTMLDivElement>(null)
-  const progress = useScrollProgress(ref as React.RefObject<HTMLElement>)
-
-  // Determine which step is active based on scroll progress
-  // Steps occupy 0-25%, 25-50%, 50-75%, 75-100% of scroll
-  const activeStep = Math.min(
-    TIMELINE_STEPS.length - 1,
-    Math.floor(progress * TIMELINE_STEPS.length)
-  )
-
-  // Line fill: maps scroll progress to CSS %
-  const lineFillPct = `${Math.round(Math.min(progress * 1.2, 1) * 100)}%`
-
-  const VISUAL_MAP: Record<string, React.ReactNode> = {
-    terminal: <AuditTerminal />,
-    builder:  <BuilderMockup />,
-    callout: (
-      <div className="ms-hiw__callout">
-        <span className="ms-hiw__callout-icon">⚡</span>
-        <div>
-          <div className="ms-hiw__callout-text">
-            System runs. You coach.
-          </div>
-          <div className="ms-hiw__callout-sub">
-            14 days. Then it's yours.
-          </div>
-        </div>
-      </div>
-    ),
-  }
+  const inView = useInView(ref as React.RefObject<HTMLElement>, 0.1)
 
   return (
-    <section className="ms-section ms-hiw" id="process">
-      {/* Sticky scroll-driven track — 4× viewport height */}
-      <div
-        ref={ref}
-        style={{ height: "400vh" }}
-        aria-hidden="true"
-      />
+    <section className="ms-section ms-hiw" id="process" ref={ref}>
+      <div className="ms-wrap">
+        <div className="ms-hiw__head">
+          <h2 className="ms-hiw__title">
+            From first call to running system: <G>14 days.</G>
+          </h2>
+          <p className="ms-hiw__sub">
+            A clear, predictable process. No surprises.
+          </p>
+        </div>
 
-      {/* Sticky container — shows while track is in view */}
-      <div
-        style={{
-          position: "sticky",
-          top: 80,
-          marginTop: "-400vh",
-          pointerEvents: "none",
-        }}
-      >
-        <div className="ms-wrap">
-          {/* Heading */}
-          <div className="ms-hiw__head">
-            <h2 className="ms-hiw__title">
-              From first call to running system:{" "}
-              <G>14 days.</G>
-            </h2>
-            <p className="ms-hiw__sub">
-              A clear, predictable process. No surprises.
-            </p>
+        <div className="ms-hiw__track" style={{ pointerEvents: "all" }}>
+          <div className="ms-hiw__line">
+            <div className="ms-hiw__line-bar">
+              <div
+                className="ms-hiw__line-fill"
+                style={{
+                  height: inView ? "100%" : "0%",
+                  transition: "height 1.2s cubic-bezier(0.16,1,0.3,1)",
+                }}
+              />
+            </div>
           </div>
 
-          {/* Track: line + steps */}
-          <div
-            className="ms-hiw__track"
-            style={{ pointerEvents: "all" }}
-          >
-            {/* Vertical line column */}
-            <div className="ms-hiw__line">
-              <div className="ms-hiw__line-bar">
-                <div
-                  className="ms-hiw__line-fill"
-                  style={{ height: lineFillPct }}
-                />
+          <div className="ms-hiw__steps">
+            {TIMELINE_STEPS.map((step, idx) => (
+              <div
+                key={step.id}
+                className="ms-hiw__step ms-hiw__step--active"
+                style={{
+                  opacity: inView ? 1 : 0,
+                  transform: inView ? "translateY(0)" : "translateY(24px)",
+                  transition: `opacity 0.5s ease ${idx * 0.15}s, transform 0.5s ease ${idx * 0.15}s`,
+                }}
+              >
+                <div className="ms-hiw__node ms-hiw__node--done" aria-hidden="true" />
+                <div className="ms-hiw__step-time">{step.time}</div>
+                <h3 className="ms-hiw__step-title">{step.title}</h3>
+                <p className="ms-hiw__step-body">{step.body}</p>
               </div>
-            </div>
-
-            {/* Steps column */}
-            <div className="ms-hiw__steps">
-              {TIMELINE_STEPS.map((step) => {
-                const isActive = step.id - 1 === activeStep
-                const isDone   = step.id - 1 < activeStep
-
-                return (
-                  <div
-                    key={step.id}
-                    className={`ms-hiw__step${isActive ? " ms-hiw__step--active" : ""}`}
-                  >
-                    {/* Node on the line */}
-                    <div
-                      className={`ms-hiw__node${
-                        isActive ? " ms-hiw__node--active" :
-                        isDone   ? " ms-hiw__node--done"   : ""
-                      }`}
-                      aria-hidden="true"
-                    />
-
-                    <div className="ms-hiw__step-time">{step.time}</div>
-                    <h3 className="ms-hiw__step-title">{step.title}</h3>
-                    <p className="ms-hiw__step-body">{step.body}</p>
-
-                    {/* Optional visual inset */}
-                    {step.visual !== "none" && VISUAL_MAP[step.visual]}
-                  </div>
-                )
-              })}
-            </div>
+            ))}
           </div>
         </div>
       </div>
